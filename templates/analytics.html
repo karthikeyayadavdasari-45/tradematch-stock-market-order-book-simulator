@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="eyebrow">Live Metrics</div>
+    <h1>Analytics Dashboard</h1>
+    <p>Key market metrics, recalculated on every request directly from the in-memory order book and trade history.</p>
+  </div>
+
+  <div class="grid-4">
+    <div class="stat-card k-buy">
+      <div class="stat-label">Total Buy Orders</div>
+      <div class="stat-value k-buy">{{ analytics.total_buy_orders }}</div>
+    </div>
+    <div class="stat-card k-sell">
+      <div class="stat-label">Total Sell Orders</div>
+      <div class="stat-value k-sell">{{ analytics.total_sell_orders }}</div>
+    </div>
+    <div class="stat-card k-blue">
+      <div class="stat-label">Total Executed Trades</div>
+      <div class="stat-value">{{ analytics.total_trades }}</div>
+    </div>
+    <div class="stat-card k-amber">
+      <div class="stat-label">Last Traded Price</div>
+      <div class="stat-value k-amber">{{ analytics.last_price }}</div>
+    </div>
+    <div class="stat-card k-buy">
+      <div class="stat-label">Best Bid</div>
+      <div class="stat-value k-buy">{{ analytics.best_bid }}</div>
+    </div>
+    <div class="stat-card k-sell">
+      <div class="stat-label">Best Ask</div>
+      <div class="stat-value k-sell">{{ analytics.best_ask }}</div>
+    </div>
+    <div class="stat-card k-amber">
+      <div class="stat-label">Spread</div>
+      <div class="stat-value k-amber">{{ analytics.spread }}</div>
+    </div>
+    <div class="stat-card k-blue">
+      <div class="stat-label">Order Book State</div>
+      <div class="stat-value" style="font-size:1.1rem;">
+        {{ analytics.total_buy_orders + analytics.total_sell_orders }} resting
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="book-col-heading"><span class="dot buy"></span> Recent Executions</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Trade ID</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in recent_trades %}
+          <tr>
+            <td>#{{ t.trade_id }}</td>
+            <td class="price-buy">{{ t.buyer_id }}</td>
+            <td class="price-sell">{{ t.seller_id }}</td>
+            <td>{{ "%.2f"|format(t.price) }}</td>
+            <td>{{ t.quantity }}</td>
+            <td>{{ t.formatted_time() }}</td>
+          </tr>
+          {% else %}
+          <tr class="empty-row"><td colspan="6">No trades executed yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

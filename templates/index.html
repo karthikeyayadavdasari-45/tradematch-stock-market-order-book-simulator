@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Educational Matching Engine</div>
+      <h1>Watch a <span class="hl-buy">buy</span> and a <span class="hl-sell">sell</span> order find each other.</h1>
+      <p>
+        A from-scratch stock exchange order book, built entirely in Python and Flask.
+        Submit limit orders, watch the engine apply strict price-time priority,
+        and inspect every partial fill down to the last share — no JavaScript,
+        no database, no external data feed.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('place_order') }}" class="btn btn-primary">Place an Order</a>
+        <a href="{{ url_for('orderbook') }}" class="btn btn-outline">View Order Book</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num">{{ analytics.total_buy_orders }}</div>
+          <div class="label">Open Bids</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">{{ analytics.total_sell_orders }}</div>
+          <div class="label">Open Asks</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">{{ analytics.total_trades }}</div>
+          <div class="label">Executed Trades</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">{{ analytics.last_price }}</div>
+          <div class="label">Last Price</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="depth-card">
+      <div class="depth-title"><span>Order Book Preview</span><span>Depth</span></div>
+
+      {% if preview_sells %}
+        {% for row in preview_sells|reverse %}
+        <div class="depth-row">
+          <span class="price-sell">{{ "%.2f"|format(row.order.price) }}</span>
+          <div class="depth-bar-track">
+            <div class="depth-bar-fill sell" style="width: {{ row.percent }}%; margin-left: auto;"></div>
+          </div>
+          <span>{{ row.order.remaining_quantity }}</span>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="depth-divider"><span>SPREAD {{ analytics.spread }}</span></div>
+
+      {% if preview_buys %}
+        {% for row in preview_buys %}
+        <div class="depth-row">
+          <span class="price-buy">{{ "%.2f"|format(row.order.price) }}</span>
+          <div class="depth-bar-track">
+            <div class="depth-bar-fill buy" style="width: {{ row.percent }}%;"></div>
+          </div>
+          <span>{{ row.order.remaining_quantity }}</span>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if not preview_buys and not preview_sells %}
+        <p style="color: var(--text-muted); font-size: 0.85rem; padding: 20px 0; text-align: center;">
+          The book is empty. <a href="{{ url_for('place_order') }}" style="color: var(--blue);">Place the first order</a>.
+        </p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <h2>Everything a matching engine needs</h2>
+      <p>Five focused pages cover the full lifecycle of an order — from submission to execution.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon c-buy">P/T</div>
+        <h3>Price-Time Priority</h3>
+        <p>The best price always trades first. Ties at the same price are resolved strictly FIFO, by arrival order.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon c-amber">½</div>
+        <h3>Partial Fills</h3>
+        <p>Large orders can be filled across several counterparties. Remaining quantity keeps resting in the book.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon c-blue">✓</div>
+        <h3>Input Validation</h3>
+        <p>Order IDs, prices, quantities and sides are all checked server-side before an order ever reaches the book.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon c-sell">⇄</div>
+        <h3>Live Order Book</h3>
+        <p>Buy orders sorted highest price first, sell orders sorted lowest price first — updated after every match.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon c-buy">⟲</div>
+        <h3>Execution History</h3>
+        <p>Every trade the engine produces is logged permanently with buyer, seller, price, quantity and timestamp.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon c-amber">Σ</div>
+        <h3>Analytics Dashboard</h3>
+        <p>Best bid, best ask, spread and last traded price — recalculated live from the in-memory book.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Place Order{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="eyebrow">Submit</div>
+    <h1>Place Order</h1>
+    <p>New orders are validated, added to the book, and immediately run through the matching engine.</p>
+  </div>
+
+  <div class="form-card">
+
+    {% if errors %}
+      <div class="alert alert-error">
+        <ul>
+          {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('place_order') }}" novalidate>
+
+      <div class="form-row">
+        <label for="order_id">Order ID</label>
+        <input type="text" id="order_id" name="order_id" placeholder="e.g. ORD-1001"
+               value="{{ form_values.order_id }}" maxlength="40" required>
+        <div class="helper-text">Must be unique across all orders ever submitted.</div>
+      </div>
+
+      <div class="form-row">
+        <label>Side</label>
+        <div class="side-toggle">
+          <input type="radio" id="side_buy" name="side" value="BUY"
+                 {% if form_values.side == 'BUY' %}checked{% endif %}>
+          <label for="side_buy" class="opt-buy">▲ BUY</label>
+
+          <input type="radio" id="side_sell" name="side" value="SELL"
+                 {% if form_values.side == 'SELL' %}checked{% endif %}>
+          <label for="side_sell" class="opt-sell">▼ SELL</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="price">Price</label>
+        <input type="number" id="price" name="price" step="0.01" min="0.01"
+               placeholder="e.g. 152.50" value="{{ form_values.price }}" required>
+        <div class="helper-text">Must be a positive number.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" step="1" min="1"
+               placeholder="e.g. 100" value="{{ form_values.quantity }}" required>
+        <div class="helper-text">Must be a positive whole number of shares.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Submit Order</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

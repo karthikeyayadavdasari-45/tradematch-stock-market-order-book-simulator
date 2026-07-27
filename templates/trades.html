@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Trade History{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="eyebrow">Execution Log</div>
+    <h1>Trade History</h1>
+    <p>Every trade produced by the matching engine, most recent first. Execution price follows the resting order's price.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trade ID</th>
+          <th>Buyer (Order ID)</th>
+          <th>Seller (Order ID)</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in trade_history %}
+        <tr>
+          <td>#{{ t.trade_id }}</td>
+          <td class="price-buy">{{ t.buyer_id }}</td>
+          <td class="price-sell">{{ t.seller_id }}</td>
+          <td>{{ "%.2f"|format(t.price) }}</td>
+          <td>{{ t.quantity }}</td>
+          <td>{{ t.formatted_time() }}</td>
+        </tr>
+        {% else %}
+        <tr class="empty-row"><td colspan="6">No trades executed yet — place matching buy and sell orders to see them here.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

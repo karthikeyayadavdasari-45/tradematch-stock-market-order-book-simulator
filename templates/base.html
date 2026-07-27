@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TradeMatch{% endblock %} · Stock Market Order Book Simulator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="brand" href="{{ url_for('home') }}">
+         <span class="brand-mark">TM</span>
+         <span class="brand-name">TradeMatch</span>
+       </a>
+      <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' }}">Home</a>
+        <a href="{{ url_for('orderbook') }}" class="{{ 'active' if active_page == 'orderbook' }}">Order Book</a>
+        <a href="{{ url_for('place_order') }}" class="{{ 'active' if active_page == 'place_order' }}">Place Order</a>
+        <a href="{{ url_for('trades') }}" class="{{ 'active' if active_page == 'trades' }}">Trade History</a>
+        <a href="{{ url_for('analytics') }}" class="{{ 'active' if active_page == 'analytics' }}">Analytics</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-track">
+      {% for i in range(2) %}
+      <span class="ticker-item up"><span class="sym">MATCH-ENGINE</span> PRICE-TIME PRIORITY ▲</span>
+      <span class="ticker-item"><span class="sym">FIFO</span> QUEUE AT EACH PRICE LEVEL</span>
+      <span class="ticker-item down"><span class="sym">PARTIAL-FILLS</span> SUPPORTED ▼</span>
+      <span class="ticker-item up"><span class="sym">BID</span> HIGHEST BUY WINS ▲</span>
+      <span class="ticker-item down"><span class="sym">ASK</span> LOWEST SELL WINS ▼</span>
+      <span class="ticker-item"><span class="sym">IN-MEMORY</span> ZERO DATABASE · ZERO JS</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container" style="padding-top:24px;">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-brand">TradeMatch</div>
+        <p class="footer-note">
+          An educational exchange-matching engine built with Flask, HTML and CSS only —
+          no JavaScript, no database, no external APIs.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('orderbook') }}">Order Book</a>
+        <a href="{{ url_for('analytics') }}">Analytics</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

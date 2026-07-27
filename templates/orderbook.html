@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Order Book{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div class="eyebrow">Live Book</div>
+    <h1>Order Book</h1>
+    <p>Buy orders are sorted highest price first; sell orders are sorted lowest price first. Ties are broken by arrival time (FIFO).</p>
+  </div>
+
+  <div class="book-columns">
+
+    <div>
+      <div class="book-col-heading"><span class="dot buy"></span> Buy Orders ({{ buy_orders|length }})</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Side</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in buy_orders %}
+            <tr>
+              <td>{{ o.order_id }}</td>
+              <td><span class="side-tag buy">BUY</span></td>
+              <td class="price-buy">{{ "%.2f"|format(o.price) }}</td>
+              <td>{{ o.remaining_quantity }}</td>
+              <td>
+                <span class="status-dot {{ o.status|lower }}"></span>{{ o.status }}
+              </td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="5">No open buy orders.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="book-col-heading"><span class="dot sell"></span> Sell Orders ({{ sell_orders|length }})</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Side</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in sell_orders %}
+            <tr>
+              <td>{{ o.order_id }}</td>
+              <td><span class="side-tag sell">SELL</span></td>
+              <td class="price-sell">{{ "%.2f"|format(o.price) }}</td>
+              <td>{{ o.remaining_quantity }}</td>
+              <td>
+                <span class="status-dot {{ o.status|lower }}"></span>{{ o.status }}
+              </td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="5">No open sell orders.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <section>
+    <a href="{{ url_for('place_order') }}" class="btn btn-primary">Place a New Order</a>
+  </section>
+</div>
+{% endblock %}
